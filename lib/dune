@@ -1,0 +1,20 @@
+(library
+ (name ocaml_ssl_demo)
+ (wrapped false)
+ (libraries 
+
+    cohttp
+    cohttp-lwt-unix
+    conduit
+    conduit-lwt-unix
+    lwt
+    lwt_ssl
+    ssl
+
+    cstruct
+    rresult
+    x509
+    mirage-crypto-rng
+    mirage-crypto-rng.unix
+    ptime
+    ptime.clock.os))

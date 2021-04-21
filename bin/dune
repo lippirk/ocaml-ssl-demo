@@ -1,0 +1,4 @@
+(executable
+ (public_name ocaml-ssl-demo)
+ (name main)
+ (libraries ocaml_ssl_demo lwt))
