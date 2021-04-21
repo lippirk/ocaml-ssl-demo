@@ -1,0 +1,4 @@
+break-cases = fit
+parse-docstrings = true
+wrap-comments = true
+margin = 100

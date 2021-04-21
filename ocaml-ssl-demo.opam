@@ -9,6 +9,7 @@ depends: [
   "conduit-lwt-unix"
   "cohttp"
   "lwt"
+  "lwt-ssl"
   "ssl"
   "odoc" {with-doc}
 ]

@@ -12,4 +12,5 @@
   conduit-lwt-unix
   cohttp
   lwt
+  lwt-ssl
   ssl))
