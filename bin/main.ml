@@ -33,7 +33,7 @@ let matrix =
   ]
 
 let run_test_case (bundle_fname, verif_flag, cb, success_or_fail) : unit Lwt.t =
-  (** run a single test case *)
+  (* run a single test case *)
   let cb_str = match cb with `default_cb -> "default_cb" | `my_cb -> "my_cb" in
   let cb =
     match cb with `default_cb -> Ssl.client_verify_callback | `my_cb -> Ssl.Citrix.exact_match_cb
@@ -44,17 +44,18 @@ let run_test_case (bundle_fname, verif_flag, cb, success_or_fail) : unit Lwt.t =
       enable_verification
   in
   Client.set_ssl_params ~enable_verification ~bundle_fname ~cb;
-  let* () =
+  let f () =
     match success_or_fail with
-    | `success -> List.init 10 (fun _ -> ()) |> Lwt_list.iter_p Client.call_server
+    | `success -> Client.call_server ()
     | `failure -> assert_fail Client.call_server
   in
+  let* () = List.init 10 (fun _ -> ()) |> Lwt_list.iter_p f in
   Stdlib.flush Stdlib.stderr;
   let* () = eprintf "====\n" in
   Lwt.return ()
 
 let run_matrix () : unit Lwt.t =
-  (** run all the test cases in [matrix] in a random order *)
+  (* run all the test cases in [matrix] in a random order *)
   let rec permutation list =
     let rec extract acc n = function
       | [] -> raise Not_found
