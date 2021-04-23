@@ -1,7 +1,7 @@
 module Rsa = Mirage_crypto_pk.Rsa
 open Rresult
 
-let (let*) = Result.bind
+let ( let* ) = Result.bind
 
 let () = Mirage_crypto_rng_unix.initialize ()
 

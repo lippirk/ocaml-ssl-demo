@@ -32,10 +32,10 @@ let set_ssl_params ~enable_verification ~bundle_fname ~cb : unit =
   if enable_verification then (
     Printf.eprintf "client.ml: enabling verification\n";
     Ssl.set_verify ctx [ Ssl.Verify_peer ] (Some cb);
-    Ssl.load_verify_locations ctx bundle_fname "" )
+    Ssl.load_verify_locations ctx bundle_fname "")
   else (
     Printf.eprintf "client.ml: not enabling verification\n";
-    Ssl.set_verify ctx [] None );
+    Ssl.set_verify ctx [] None);
   Ssl.set_cipher_list ctx ciphers;
   Ssl.disable_protocols ctx disable_protocols
 
