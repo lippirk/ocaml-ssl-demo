@@ -4,19 +4,19 @@ build:
 
 .PHONY: run-separately
 run-separately:
-	dune exec ocaml-ssl-demo --profile=release -- 0
-	dune exec ocaml-ssl-demo --profile=release -- 1
-	dune exec ocaml-ssl-demo --profile=release -- 2
-	dune exec ocaml-ssl-demo --profile=release -- 3
-	dune exec ocaml-ssl-demo --profile=release -- 4
-	dune exec ocaml-ssl-demo --profile=release -- 5
-	dune exec ocaml-ssl-demo --profile=release -- 6
-	dune exec ocaml-ssl-demo --profile=release -- 7
+	CONDUIT_TLS=openssl dune exec ocaml-ssl-demo --profile=release -- 0
+	CONDUIT_TLS=openssl dune exec ocaml-ssl-demo --profile=release -- 1
+	CONDUIT_TLS=openssl dune exec ocaml-ssl-demo --profile=release -- 2
+	CONDUIT_TLS=openssl dune exec ocaml-ssl-demo --profile=release -- 3
+	CONDUIT_TLS=openssl dune exec ocaml-ssl-demo --profile=release -- 4
+	CONDUIT_TLS=openssl dune exec ocaml-ssl-demo --profile=release -- 5
+	CONDUIT_TLS=openssl dune exec ocaml-ssl-demo --profile=release -- 6
+	CONDUIT_TLS=openssl dune exec ocaml-ssl-demo --profile=release -- 7
 
 
 .PHONY: run-together
 run-together: build
-	dune exec ocaml-ssl-demo --profile=release
+	CONDUIT_TLS=openssl dune exec ocaml-ssl-demo --profile=release
 
 .PHONY: clean
 clean:

@@ -43,11 +43,11 @@ let run_test_case (bundle_fname, verif_flag, cb, success_or_fail) : unit Lwt.t =
     eprintf "====test case: bundle=%s, cb=%s, enable_verification=%b\n" bundle_fname cb_str
       enable_verification
   in
-  Client.set_ssl_params ~enable_verification ~bundle_fname ~cb;
-  let f () =
+  let ctx = Client.create_ssl_ctx ~enable_verification ~bundle_fname ~cb in
+  let f () : unit Lwt.t =
     match success_or_fail with
-    | `success -> Client.call_server ()
-    | `failure -> assert_fail Client.call_server
+    | `success -> Client.call_server ~ctx ()
+    | `failure -> assert_fail (Client.call_server ~ctx)
   in
   let* () = List.init 10 (fun _ -> ()) |> Lwt_list.iter_p f in
   Stdlib.flush Stdlib.stderr;
