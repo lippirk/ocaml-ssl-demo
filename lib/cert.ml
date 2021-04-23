@@ -1,6 +1,8 @@
 module Rsa = Mirage_crypto_pk.Rsa
 open Rresult
 
+let (let*) = Result.bind
+
 let () = Mirage_crypto_rng_unix.initialize ()
 
 type stdout = string
@@ -69,7 +71,7 @@ let selfsign issuer extensions key_length days certfile =
   in
   let privkey = `RSA rsa in
   let pubkey = `RSA (Rsa.pub_of_priv rsa) in
-  let req = X509.Signing_request.create issuer privkey in
+  let* req = X509.Signing_request.create issuer privkey in
   sign days privkey pubkey issuer req extensions >>= fun cert ->
   let key_pem = X509.Private_key.encode_pem privkey in
   let cert_pem = X509.Certificate.encode_pem cert in
