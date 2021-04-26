@@ -27,12 +27,12 @@ let _call_server ~ctx ~body : unit Lwt.t =
     let* () = eprintf "%s" msg in
     Lwt.fail_with msg
 
-let create_ssl_ctx ~enable_verification ~bundle_fname ~cb : Ssl.context =
+let create_ssl_ctx ~enable_verification ~bundle_fname : Ssl.context =
   let ctx = Conduit_lwt_unix_ssl.Client.create_ctx () in
   Ssl.load_verify_locations ctx bundle_fname "";
   if enable_verification then (
     Printf.eprintf "client.ml: enabling verification\n";
-    Ssl.set_verify ctx [ Ssl.Verify_peer ] (Some cb))
+    Ssl.set_verify ctx [ Ssl.Verify_peer ] (Some Ssl.client_verify_callback))
   else (
     Printf.eprintf "client.ml: not enabling verification\n";
     let (_ : bool) = Ssl.set_default_verify_paths ctx in
@@ -42,9 +42,14 @@ let create_ssl_ctx ~enable_verification ~bundle_fname ~cb : Ssl.context =
   ctx
 
 let call_server ~(ctx : Ssl.context) () : unit Lwt.t =
-  (* three types of context :D *)
-  let client_ssl_context = ctx in
-  let* (ctx : Conduit_lwt_unix.ctx) = Conduit_lwt_unix.init ~client_ssl_context () in
+  let openssl_overrides =
+    let open Conduit_lwt_unix_ssl.Overrides in
+    {
+      client =
+        Some Client.{ ctx = Some ctx; hostname = Some "cf412cfa-de68-48f3-9aef-434927f883af" };
+    }
+  in
+  let* (ctx : Conduit_lwt_unix.ctx) = Conduit_lwt_unix.init ~openssl_overrides () in
   let ctx : Cohttp_lwt_unix.Client.ctx = Cohttp_lwt_unix.Client.custom_ctx ~ctx () in
   let logger e =
     let* () = eprintf "client.ml:call_server exception: %s\n" (Printexc.to_string e) in

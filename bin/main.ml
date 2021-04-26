@@ -23,27 +23,27 @@ let matrix =
   (* 3 variables ==> 2**3 = 8 test cases *)
   [
     ("bad-bundle.pem", `verif, `default_cb, `failure);
-    ("good-bundle.pem", `verif, `default_cb, `failure);
+    ("good-bundle.pem", `verif, `default_cb, `success);
     ("bad-bundle.pem", `no_verif, `default_cb, `success);
     ("good-bundle.pem", `no_verif, `default_cb, `success);
-    ("bad-bundle.pem", `verif, `my_cb, `failure);
-    ("good-bundle.pem", `verif, `my_cb, `success);
-    ("bad-bundle.pem", `no_verif, `my_cb, `success);
-    ("good-bundle.pem", `no_verif, `my_cb, `success);
+    (* ("bad-bundle.pem", `verif, `my_cb, `failure); *)
+    (* ("good-bundle.pem", `verif, `my_cb, `success); *)
+    (* ("bad-bundle.pem", `no_verif, `my_cb, `success); *)
+    (* ("good-bundle.pem", `no_verif, `my_cb, `success); *)
   ]
 
 let run_test_case (bundle_fname, verif_flag, cb, success_or_fail) : unit Lwt.t =
   (* run a single test case *)
   let cb_str = match cb with `default_cb -> "default_cb" | `my_cb -> "my_cb" in
-  let cb =
-    match cb with `default_cb -> Ssl.client_verify_callback | `my_cb -> Ssl.Citrix.exact_match_cb
-  in
+  (* let cb = *)
+    (* match cb with `default_cb -> Ssl.client_verify_callback | `my_cb -> Ssl.Citrix.exact_match_cb *)
+  (* in *)
   let enable_verification = match verif_flag with `no_verif -> false | `verif -> true in
   let* () =
     eprintf "====test case: bundle=%s, cb=%s, enable_verification=%b\n" bundle_fname cb_str
       enable_verification
   in
-  let ctx = Client.create_ssl_ctx ~enable_verification ~bundle_fname ~cb in
+  let ctx = Client.create_ssl_ctx ~enable_verification ~bundle_fname in
   let f () : unit Lwt.t =
     match success_or_fail with
     | `success -> Client.call_server ~ctx ()
